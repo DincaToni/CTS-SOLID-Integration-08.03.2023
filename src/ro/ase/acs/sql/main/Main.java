@@ -1,6 +1,8 @@
 package ro.ase.acs.sql.main;
 
+import ro.ase.acs.sql.classes.AddData;
 import ro.ase.acs.sql.classes.BuildTable;
+import ro.ase.acs.sql.interfaces.DataInserator;
 import ro.ase.acs.sql.interfaces.TableCreator;
 
 import java.sql.Connection;
@@ -20,7 +22,9 @@ public class Main {
 
             TableCreator tableCreator = new BuildTable();
             tableCreator.createTable(connection);
-            insertData(connection);
+
+            DataInserator dataInserator = new AddData();
+            dataInserator.insertData(connection);
             readData(connection);
 
             connection.close();
@@ -29,26 +33,6 @@ public class Main {
         }
     }
 
-
-
-    private static void insertData(Connection connection) throws SQLException {
-        String sqlInsert = "INSERT INTO employees VALUES(1, 'Popescu Ion', 'Bucharest', 4000)";
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(sqlInsert);
-        statement.close();
-
-        String sqlInsertWithParams = "INSERT INTO employees VALUES (?,?,?,?)";
-        PreparedStatement preparedStatement =
-                connection.prepareStatement(sqlInsertWithParams);
-        preparedStatement.setInt(1, 2);
-        preparedStatement.setString(2, "Ionescu Vasile");
-        preparedStatement.setString(3, "Brasov");
-        preparedStatement.setDouble(4, 4500);
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
-
-        connection.commit();
-    }
 
     private static void readData(Connection connection) throws SQLException {
         String sqlSelect = "SELECT * FROM employees";
