@@ -1,4 +1,7 @@
-package ro.ase.acs.sql;
+package ro.ase.acs.sql.main;
+
+import ro.ase.acs.sql.classes.BuildTable;
+import ro.ase.acs.sql.interfaces.TableCreator;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +18,8 @@ public class Main {
             Connection connection = DriverManager.getConnection("jdbc:sqlite:database.db");
             connection.setAutoCommit(false);
 
-            createTable(connection);
+            TableCreator tableCreator = new BuildTable();
+            tableCreator.createTable(connection);
             insertData(connection);
             readData(connection);
 
@@ -25,17 +29,7 @@ public class Main {
         }
     }
 
-    private static void createTable(Connection connection) throws SQLException {
-        String sqlDrop = "DROP TABLE IF EXISTS employees";
-        String sqlCreate = "CREATE TABLE employees(id INTEGER PRIMARY KEY,"
-                + "name TEXT, address TEXT, salary REAL)";
 
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(sqlDrop);
-        statement.executeUpdate(sqlCreate);
-        statement.close();
-        connection.commit();
-    }
 
     private static void insertData(Connection connection) throws SQLException {
         String sqlInsert = "INSERT INTO employees VALUES(1, 'Popescu Ion', 'Bucharest', 4000)";
